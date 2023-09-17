@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Node File Upload</title>
+</head>
+<body>
+  <h1>Node.js File Uploader</h1>
+  <form id="upload-form" enctype="multipart/form-data">
+    <input type="file" id="my-files" accept="pdf/*" multiple />
+    <button type="submit">Submit</button>
+  </form>
+  <h2></h2>
+  <h3></h3>
+  <script>
+    const form = document.getElementById('upload-form');
+
+    const sendFiles = async () => {
+      const myFiles = document.getElementById('my-files').files;
+
+      const formData = new FormData();
+      Object.keys(myFiles).forEach((key) => {
+        formData.append(myFiles.item(key).name, myFiles.item(key));
+      });
+
+      const response = await fetch('http://localhost:3000/upload', {
+        method: 'POST',
+        body: formData
+      });
+
+      const json = await response.json();
+
+      console.log(json);
+
+      document.querySelector('h2').innerHTML = json.status;
+
+      document.querySelector('h3').innerHTML = json.message;
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      await sendFiles();
+    })
+  </script>
+</body>
+</html>
